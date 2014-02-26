@@ -59,7 +59,7 @@ public class ExplorationController : MonoBehaviour {
         strafeStartFingerId = -1;
       }
       else if (touch.fingerId == rotateStartFingerId) {
-        strafeStartFingerId = -1;
+        rotateStartFingerId = -1;
       }
     }
   }
