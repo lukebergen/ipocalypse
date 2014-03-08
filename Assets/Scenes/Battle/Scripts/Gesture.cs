@@ -14,6 +14,8 @@ public class Gesture {
   private List<Touch> touches;
   private int type;
 
+  private float startFrameTime;
+
   private bool resolved;
   public bool Resolved {
     get {return resolved;}
@@ -24,6 +26,7 @@ public class Gesture {
     type = Gesture.Hold;
     touches = new List<Touch>();
     resolved = false;
+    startFrameTime = Time.time;
   }
 
   public void AddTouch(Touch touch) {
