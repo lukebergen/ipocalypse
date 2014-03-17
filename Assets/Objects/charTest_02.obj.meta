@@ -1,0 +1,121 @@
+fileFormatVersion: 2
+guid: b33bc2af83b5d4055941037237864809
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: character_GRP_pCube1
+    100002: character_GRP_pCube13
+    100004: character_GRP_pCube14
+    100006: character_GRP_pCube2
+    100008: character_GRP_pCube3
+    100010: character_GRP_pCube4
+    100012: character_GRP_pCube5
+    100014: character_GRP_pCylinder1
+    100016: character_GRP_pCylinder15
+    100018: character_GRP_polySurface1
+    100020: character_GRP_polySurface20
+    100022: //RootNode
+    100024: polySurface4_character_GRP
+    400000: character_GRP_pCube1
+    400002: character_GRP_pCube13
+    400004: character_GRP_pCube14
+    400006: character_GRP_pCube2
+    400008: character_GRP_pCube3
+    400010: character_GRP_pCube4
+    400012: character_GRP_pCube5
+    400014: character_GRP_pCylinder1
+    400016: character_GRP_pCylinder15
+    400018: character_GRP_polySurface1
+    400020: character_GRP_polySurface20
+    400022: //RootNode
+    400024: polySurface4_character_GRP
+    2300000: character_GRP_pCube1
+    2300002: character_GRP_pCube13
+    2300004: character_GRP_pCube14
+    2300006: character_GRP_pCube2
+    2300008: character_GRP_pCube3
+    2300010: character_GRP_pCube4
+    2300012: character_GRP_pCube5
+    2300014: character_GRP_pCylinder1
+    2300016: character_GRP_pCylinder15
+    2300018: character_GRP_polySurface1
+    2300020: character_GRP_polySurface20
+    2300022: polySurface4_character_GRP
+    3300000: character_GRP_pCube1
+    3300002: character_GRP_pCube13
+    3300004: character_GRP_pCube14
+    3300006: character_GRP_pCube2
+    3300008: character_GRP_pCube3
+    3300010: character_GRP_pCube4
+    3300012: character_GRP_pCube5
+    3300014: character_GRP_pCylinder1
+    3300016: character_GRP_pCylinder15
+    3300018: character_GRP_polySurface1
+    3300020: character_GRP_polySurface20
+    3300022: polySurface4_character_GRP
+    4300000: character_GRP_pCube1
+    4300002: character_GRP_pCube13
+    4300004: character_GRP_pCube14
+    4300006: character_GRP_pCube2
+    4300008: character_GRP_pCube3
+    4300010: character_GRP_pCube4
+    4300012: character_GRP_pCube5
+    4300014: character_GRP_pCylinder1
+    4300016: character_GRP_pCylinder15
+    4300018: character_GRP_polySurface1
+    4300020: character_GRP_polySurface20
+    4300022: polySurface4_character_GRP
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: .349999994
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

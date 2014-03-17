@@ -3,86 +3,145 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-  // the y value at which falling stops (changes if they jump through window or some some)
-  public float Ground;
+  public enum Direction {Up, Down, Left, Right};
+  public enum State {Running, Juking, Jumping, Rolling, Stumbling};
 
   public float RunSpeed;
-  public float jumpVelocity;
-  public float gravity;
-  public float terminalVelocity;
-  public float dragThreshold;
+  public float JumpForce;
+  public float DragThreshold;
   public float LaneDist;
+  public int SlideLength;
 
+  public int Lane;
+
+  private bool sliding;
+  private int standOnFrame;
   private Vector2 initialTouch;
   private bool dragging = false;
-  private bool dragComplete = true;
-  private float yVelocity = 0.0f;
+  private bool dragComplete = false;
 
-  private enum direction {Up, Down, Left, Right};
+  void Start() {
+    Lane = 1;
+    sliding = false;
+    // rigidbody.AddForce(new Vector3(0, 0, RunSpeed));
+  }
 
   // Update is called once per frame
   void Update () {
-    dealWithInput();
-
-    float newZ = transform.position.z + (RunSpeed * Time.deltaTime);
-    float newY = transform.position.y + yVelocity;
-
-    if (newY < 0) {
-      newY = 0;
-      yVelocity = 0.0f;
-    }
-    if (yVelocity < terminalVelocity) {
-      yVelocity = terminalVelocity;
-    } else {
-      yVelocity -= gravity;
-    }
-
-    transform.position = new Vector3(transform.position.x, newY, newZ);
+    // dealWithTouchInput();
+    dealWithKeyboardInput();
+    applyConstantForce();
+    checkStateChanges();
+    // doMovement();
   }
 
-  private void dealWithInput() {
+  private void applyConstantForce() {
+    Vector3 vel = rigidbody.velocity;
+    vel.z = RunSpeed;
+    rigidbody.velocity = vel;
+  }
+
+  private void checkStateChanges() {
+    if (sliding && standOnFrame <= Time.frameCount) {
+      standUp();
+    }
+  }
+
+  private void dealWithKeyboardInput() {
+    if (Input.GetKeyUp(KeyCode.UpArrow)) {
+      jump();
+    }
+    if (Input.GetKeyUp(KeyCode.DownArrow)) {
+      slide();
+    }
+    if (Input.GetKeyUp(KeyCode.LeftArrow)) {
+      juke(-1);
+    }
+    if (Input.GetKeyUp(KeyCode.RightArrow)) {
+      juke(1);
+    }
+  }
+
+  private void dealWithTouchInput() {
     // if we decide that they've flicked up/down/etc...
 
     if (Input.touchCount > 0) {
       Touch touch = Input.touches[0];
-      if (!dragging && !dragComplete) {
+      if (!dragging) {
         initialTouch = touch.position;
         dragging = true;
         dragComplete = false;
       }
-      if (Vector3.Distance(initialTouch, touch.position) > dragThreshold && !dragComplete) {
+      if (Vector3.Distance(initialTouch, touch.position) > DragThreshold && !dragComplete) {
         Vector3 newPos;
         switch(dragDirection(initialTouch, touch.position)) {
-          case direction.Up:
-            // jumping
-            yVelocity = jumpVelocity;
+          case Direction.Up:
+            jump();
             break;
-          case direction.Down:
+          case Direction.Down:
+            slide();
             break;
-          case direction.Left:
-            newPos = transform.position;
-            newPos.x -= LaneDist;
-            transform.position = newPos;
+          case Direction.Left:
+            juke(-1);
             break;
-          case direction.Right:
-            newPos = transform.position;
-            newPos.x += LaneDist;
-            transform.position = newPos;
+          case Direction.Right:
+            juke(1);
             break;
         }
         dragComplete = true;
       }
+      if (touch.phase == TouchPhase.Ended) {
+        dragging = false;
+      }
     }
   }
 
-  private direction dragDirection(Vector3 initial, Vector3 terminal) {
+  private void jump() {
+    if (grounded()) {
+      Vector3 vel = rigidbody.velocity;
+      vel.y = JumpForce;
+      rigidbody.velocity = vel;
+    }
+  }
+
+  private void juke(int direction) {
+    if ((Lane == 0 && direction == -1) || (Lane == 2 && direction == 1)) {
+      Debug.Log("Bonk!");
+    } else {
+      float xComponent = transform.position.x + (LaneDist * direction);
+      Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
+      rigidbody.MovePosition(newPos);
+      Lane += direction;
+    }
+  }
+
+  private void slide() {
+    sliding = true;
+    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
+    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+    rigidbody.MovePosition(newPos);
+    standOnFrame = Time.frameCount + SlideLength;
+  }
+
+  private void standUp() {
+    sliding = false;
+    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(0, 0, 0)));
+  }
+
+  private bool grounded() {
+    Vector3 origin = transform.position;
+    origin.y += 0.1f;
+    return (Physics.Raycast(origin, Vector3.down, 0.2f));
+  }
+
+  private Direction dragDirection(Vector3 initial, Vector3 terminal) {
     Vector3 vect = terminal - initial;
     if (System.Math.Abs(vect.x) > System.Math.Abs(vect.y)) {
-      if (vect.x > 0) { return direction.Right; }
-      else { return direction.Left; }
+      if (vect.x > 0) { return Direction.Right; }
+      else { return Direction.Left; }
     } else {
-      if (vect.y > 0) { return direction.Up; }
-      else { return direction.Down; }
+      if (vect.y > 0) { return Direction.Up; }
+      else { return Direction.Down; }
     }
   }
 }
