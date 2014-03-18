@@ -4,7 +4,7 @@ using System.Collections;
 public class CameraController : MonoBehaviour {
 
   public GameObject Player;
-  public float Ground;
+  public Vector3 Rail;
   private PlayerController playerController;
 
   void Start() {
@@ -13,9 +13,7 @@ public class CameraController : MonoBehaviour {
 
   // Update is called once per frame
   void Update () {
-    Vector3 newPos = new Vector3();
-    newPos.x = 0.0f;
-    newPos.y = Ground + 3.0f;
+    Vector3 newPos = Rail;
     newPos.z = Player.transform.position.z - 4;
     transform.position = newPos;
   }

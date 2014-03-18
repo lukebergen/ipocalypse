@@ -21,7 +21,7 @@ public class PlayerController : MonoBehaviour {
   private bool dragComplete = false;
 
   void Start() {
-    Lane = 1;
+    Lane = 0;
     sliding = false;
     // rigidbody.AddForce(new Vector3(0, 0, RunSpeed));
   }
@@ -37,7 +37,8 @@ public class PlayerController : MonoBehaviour {
 
   private void applyConstantForce() {
     Vector3 vel = rigidbody.velocity;
-    vel.z = RunSpeed;
+    vel.z = transform.forward.z * RunSpeed;
+    vel.x = transform.forward.x * RunSpeed;
     rigidbody.velocity = vel;
   }
 
@@ -105,7 +106,7 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
-    if ((Lane == 0 && direction == -1) || (Lane == 2 && direction == 1)) {
+    if (Lane == direction) {
       Debug.Log("Bonk!");
     } else {
       float xComponent = transform.position.x + (LaneDist * direction);
@@ -118,7 +119,7 @@ public class PlayerController : MonoBehaviour {
   private void slide() {
     sliding = true;
     rigidbody.MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
-    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z);
+    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z);
     rigidbody.MovePosition(newPos);
     standOnFrame = Time.frameCount + SlideLength;
   }

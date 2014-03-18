@@ -1,0 +1,3 @@
+Re-consider the idea of direction change objects. Maybe a box made for running on
+just contains a script component with the data necessary for the player/camera to
+update themselves with?  Or "onLand" type actions on these "pathway" type objects
