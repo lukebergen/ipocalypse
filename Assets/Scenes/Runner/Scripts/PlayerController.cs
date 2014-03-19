@@ -37,8 +37,7 @@ public class PlayerController : MonoBehaviour {
 
   private void applyConstantForce() {
     Vector3 vel = rigidbody.velocity;
-    vel.z = transform.forward.z * RunSpeed;
-    vel.x = transform.forward.x * RunSpeed;
+    vel.z = RunSpeed;
     rigidbody.velocity = vel;
   }
 
@@ -118,9 +117,10 @@ public class PlayerController : MonoBehaviour {
 
   private void slide() {
     sliding = true;
-    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
-    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.4f, transform.position.z);
+    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
     rigidbody.MovePosition(newPos);
+    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
+
     standOnFrame = Time.frameCount + SlideLength;
   }
 
