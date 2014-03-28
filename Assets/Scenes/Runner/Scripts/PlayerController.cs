@@ -11,10 +11,14 @@ public class PlayerController : MonoBehaviour {
   public float DragThreshold;
   public float LaneDist;
   public int SlideLength;
+  public float JukeSpeed;
 
   public int Lane;
 
   private bool sliding;
+  private bool juking;
+  private int jukeDirection;
+  private Vector3 jukeToPos;
   private int standOnFrame;
   private Vector2 initialTouch;
   private bool dragging = false;
@@ -44,6 +48,15 @@ public class PlayerController : MonoBehaviour {
   private void checkStateChanges() {
     if (sliding && standOnFrame <= Time.frameCount) {
       standUp();
+    }
+    if (juking) {
+      Vector3 nextPos = transform.position;
+      nextPos.x += (jukeDirection * JukeSpeed) * Time.deltaTime;
+      if ( (jukeToPos.x - transform.position.x) * jukeDirection <= 0 ) {
+        juking = false;
+        nextPos.x = jukeToPos.x;
+      }
+      transform.position = nextPos;
     }
   }
 
@@ -105,6 +118,19 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
+    float xComponent;
+    if (juking) {
+      xComponent = jukeToPos.x + (LaneDist * direction);
+    } else {
+      xComponent = transform.position.x + (LaneDist * direction);
+    }
+    Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
+    jukeToPos = newPos;
+    juking = true;
+    jukeDirection = direction;
+  }
+
+  private void oldJuke(int direction) {
     if (Lane == direction) {
       Debug.Log("Bonk!");
     } else {
