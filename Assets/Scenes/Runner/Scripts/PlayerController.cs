@@ -50,6 +50,10 @@ public class PlayerController : MonoBehaviour {
       standUp();
     }
     if (juking) {
+      RaycastHit hitInfo;
+      if (rigidbody.SweepTest(new Vector3(jukeDirection, 0, 0), out hitInfo, 0.1f)) {
+        juke(jukeDirection * -1);
+      }
       Vector3 nextPos = transform.position;
       nextPos.x += (jukeDirection * JukeSpeed) * Time.deltaTime;
       if ( (jukeToPos.x - transform.position.x) * jukeDirection <= 0 ) {
