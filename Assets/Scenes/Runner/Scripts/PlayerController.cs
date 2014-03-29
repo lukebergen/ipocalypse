@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour {
   private bool sliding;
   private bool juking;
   private int jukeDirection;
+  private int queuedJuke;
   private Vector3 jukeToPos;
   private int standOnFrame;
   private Vector2 initialTouch;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour {
   void Start() {
     Lane = 0;
     sliding = false;
+    queuedJuke = 0;
     // rigidbody.AddForce(new Vector3(0, 0, RunSpeed));
   }
 
@@ -52,13 +54,18 @@ public class PlayerController : MonoBehaviour {
     if (juking) {
       RaycastHit hitInfo;
       if (rigidbody.SweepTest(new Vector3(jukeDirection, 0, 0), out hitInfo, 0.1f)) {
-        juke(jukeDirection * -1);
+        juke(jukeDirection * -1, true);
       }
+      float incr = (jukeDirection * JukeSpeed) * Time.deltaTime;
       Vector3 nextPos = transform.position;
-      nextPos.x += (jukeDirection * JukeSpeed) * Time.deltaTime;
+      nextPos.x += incr;
       if ( (jukeToPos.x - transform.position.x) * jukeDirection <= 0 ) {
         juking = false;
         nextPos.x = jukeToPos.x;
+        if (queuedJuke != 0) {
+          juke(queuedJuke);
+        }
+        queuedJuke = 0;
       }
       transform.position = nextPos;
     }
@@ -122,16 +129,22 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
-    float xComponent;
-    if (juking) {
-      xComponent = jukeToPos.x + (LaneDist * direction);
+    juke(direction, false);
+  }
+
+  private void juke(int direction, bool force) {
+    if (!juking || force) {
+      float originalX;
+      if (force) { originalX = jukeToPos.x; }
+      else { originalX = transform.position.x; }
+      float xComponent = originalX + (LaneDist * direction);
+      Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
+      jukeToPos = newPos;
+      juking = true;
+      jukeDirection = direction;
     } else {
-      xComponent = transform.position.x + (LaneDist * direction);
+      queuedJuke = direction;
     }
-    Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
-    jukeToPos = newPos;
-    juking = true;
-    jukeDirection = direction;
   }
 
   private void oldJuke(int direction) {

@@ -1049,7 +1049,7 @@ Transform:
   m_PrefabInternal: {fileID: 663832548}
   m_GameObject: {fileID: 479987623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1610523120}
@@ -1093,7 +1093,7 @@ MonoBehaviour:
   DragThreshold: 0
   LaneDist: 2
   SlideLength: 30
-  JukeSpeed: 10
+  JukeSpeed: 7
   Lane: 0
 --- !u!1 &509047133
 GameObject:
@@ -1460,7 +1460,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b33bc2af83b5d4055941037237864809, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b33bc2af83b5d4055941037237864809, type: 3}
       propertyPath: m_LocalRotation.x
@@ -1552,7 +1552,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 669662655}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5, y: .5, z: 75}
+  m_LocalPosition: {x: 3.76942921, y: .5, z: 75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1603,6 +1603,10 @@ Prefab:
       propertyPath: m_Name
       value: BoundaryWest
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_TagString
+      value: RunnerBoundary
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
   m_RootGameObject: {fileID: 1078135954}
@@ -1631,7 +1635,7 @@ Transform:
   m_PrefabInternal: {fileID: 2121815486}
   m_GameObject: {fileID: 729583956}
   m_LocalRotation: {x: 0, y: .834520221, z: 0, w: .550977349}
-  m_LocalPosition: {x: -1.64856148, y: 0, z: 6.83423996}
+  m_LocalPosition: {x: 1.57052994, y: 0, z: 6.83423996}
   m_LocalScale: {x: .300000012, y: .300000012, z: .300000012}
   m_Children:
   - {fileID: 1056889417}
@@ -2342,7 +2346,7 @@ GameObject:
   - 65: {fileID: 1078135955}
   m_Layer: 0
   m_Name: BoundaryWest
-  m_TagString: Untagged
+  m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2905,7 +2909,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1807023921}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -2.5, y: .5, z: 25}
+  m_LocalPosition: {x: 2.98777866, y: .5, z: 25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3176,7 +3180,7 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400000, guid: 926d32606bdc7456fa91b3a7cc3aa999, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.64856148
+      value: 1.57052994
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 926d32606bdc7456fa91b3a7cc3aa999, type: 3}
       propertyPath: m_LocalPosition.y
