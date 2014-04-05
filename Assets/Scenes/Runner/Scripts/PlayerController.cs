@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour {
   public int Lane;
 
   private bool sliding;
-  private bool juking;
+  public bool juking;
   private int jukeDirection;
   private int queuedJuke;
   private Vector3 jukeToPos;
@@ -43,7 +43,15 @@ public class PlayerController : MonoBehaviour {
 
   private void applyConstantForce() {
     Vector3 vel = rigidbody.velocity;
-    vel.z = RunSpeed;
+    if (System.Math.Abs(transform.forward.x) >= 0.001f) {
+      vel.x = RunSpeed;
+    }
+    if (System.Math.Abs(transform.forward.y) >= 0.001f) {
+      vel.y = RunSpeed;
+    }
+    if (System.Math.Abs(transform.forward.z) >= 0.001f) {
+      vel.z = RunSpeed;
+    }
     rigidbody.velocity = vel;
   }
 
@@ -53,15 +61,22 @@ public class PlayerController : MonoBehaviour {
     }
     if (juking) {
       RaycastHit hitInfo;
-      if (rigidbody.SweepTest(new Vector3(jukeDirection, 0, 0), out hitInfo, 0.1f)) {
+      if (rigidbody.SweepTest(transform.right * jukeDirection, out hitInfo, 0.2f)) {
         juke(jukeDirection * -1, true);
       }
       float incr = (jukeDirection * JukeSpeed) * Time.deltaTime;
-      Vector3 nextPos = transform.position;
-      nextPos.x += incr;
-      if ( (jukeToPos.x - transform.position.x) * jukeDirection <= 0 ) {
+      Vector3 nextPos = transform.position + (transform.right * incr);
+      bool passed = false;
+      if (System.Math.Abs(transform.right.x) >= 0.001f && ((jukeToPos.x - transform.position.x) * jukeDirection <= 0)) { passed = true; }
+      if (System.Math.Abs(transform.right.y) >= 0.001f && ((jukeToPos.y - transform.position.y) * jukeDirection <= 0)) { passed = true; }
+      if (System.Math.Abs(transform.right.z) >= 0.001f && ((jukeToPos.z - transform.position.z) * jukeDirection <= 0)) { passed = true; }
+      if ( passed ) {
         juking = false;
-        nextPos.x = jukeToPos.x;
+        nextPos = transform.position;
+        Debug.Log("passed. transform.right: " + transform.right);
+        if (System.Math.Abs(transform.right.x) >= 0.001f) { nextPos.x = jukeToPos.x; }
+        if (System.Math.Abs(transform.right.y) >= 0.001f) { nextPos.y = jukeToPos.y; }
+        if (System.Math.Abs(transform.right.z) >= 0.001f) { nextPos.z = jukeToPos.z; }
         if (queuedJuke != 0) {
           juke(queuedJuke);
         }
@@ -83,6 +98,9 @@ public class PlayerController : MonoBehaviour {
     }
     if (Input.GetKeyUp(KeyCode.RightArrow)) {
       juke(1);
+    }
+    if (Input.GetKeyUp(KeyCode.Space)) {
+      Debug.Log("transform.forward: " + transform.forward);
     }
   }
 
@@ -134,27 +152,15 @@ public class PlayerController : MonoBehaviour {
 
   private void juke(int direction, bool force) {
     if (!juking || force) {
-      float originalX;
-      if (force) { originalX = jukeToPos.x; }
-      else { originalX = transform.position.x; }
-      float xComponent = originalX + (LaneDist * direction);
-      Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
+      Vector3 originalPos;
+      if (juking) { originalPos = jukeToPos; }
+      else { originalPos = transform.position; }
+      Vector3 newPos = originalPos + (transform.right * direction * LaneDist);
       jukeToPos = newPos;
       juking = true;
       jukeDirection = direction;
     } else {
       queuedJuke = direction;
-    }
-  }
-
-  private void oldJuke(int direction) {
-    if (Lane == direction) {
-      Debug.Log("Bonk!");
-    } else {
-      float xComponent = transform.position.x + (LaneDist * direction);
-      Vector3 newPos = new Vector3(xComponent, transform.position.y, transform.position.z);
-      rigidbody.MovePosition(newPos);
-      Lane += direction;
     }
   }
 

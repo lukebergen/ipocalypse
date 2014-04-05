@@ -3,32 +3,35 @@ using System.Collections;
 
 public class DirectionChange : MonoBehaviour {
 
-  public float Ground;
+  public Vector3 PlayerPosition;
   public Vector3 PlayerRotation;
-  public int LaneChange;
-
-  private GameObject player;
 
   public void OnTriggerEnter(Collider other) {
     if (other.gameObject.name == "Player") {
-      player = other.gameObject;
-      handleLaneChange();
-      handleRotationChange();
+      GameObject player = other.gameObject;
+      handlePositionChange(player);
+      handleRotationChange(player);
+      resetPlayerState(player);
     }
   }
 
-  private void handleLaneChange() {
-    PlayerController pc = player.GetComponent<PlayerController>();
-    int newLane = pc.Lane + LaneChange;
-    pc.Lane = newLane;
-
-    CameraController camCtrl = GameObject.Find("Main Camera").GetComponent<CameraController>();
-    camCtrl.Rail = new Vector3(player.transform.position.x - newLane, Ground + 3.0f, 0);
+  private void handlePositionChange(GameObject player) {
+    player.transform.position = PlayerPosition;
   }
 
-  private void handleRotationChange() {
-    // TODO: currently busted
-    // Rigidbody rb = player.GetComponent<Rigidbody>();
-    // rb.MoveRotation(Quaternion.Euler(PlayerRotation));
+  private void handleRotationChange(GameObject player) {
+    player.transform.eulerAngles = PlayerRotation;
+  }
+
+  private void resetPlayerState(GameObject player) {
+    // TODO: possibly unset juking, jukeDirection, stumbling, etc...?
+    player.GetComponent<PlayerController>().juking = false;
+    RigidbodyConstraints constraints = RigidbodyConstraints.FreezeRotation;
+    Vector3 right = player.transform.right;
+    if (System.Math.Abs(right.x) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionX; }
+    if (System.Math.Abs(right.y) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionY; }
+    if (System.Math.Abs(right.z) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionZ; }
+    Rigidbody rb = player.GetComponent<Rigidbody>();
+    rb.constraints = constraints;
   }
 }
