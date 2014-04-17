@@ -562,6 +562,10 @@ Prefab:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
   m_RootGameObject: {fileID: 512884226}
@@ -577,7 +581,7 @@ GameObject:
   - 4: {fileID: 258651755}
   - 65: {fileID: 258651757}
   - 114: {fileID: 258651756}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BoundaryWest
   m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
@@ -630,7 +634,7 @@ GameObject:
   - 4: {fileID: 315503907}
   - 65: {fileID: 315503906}
   - 114: {fileID: 315503905}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BoundaryEast1
   m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
@@ -1081,6 +1085,9 @@ MonoBehaviour:
   LaneDist: 2
   SlideLength: 30
   JukeSpeed: 7
+  BoundaryLayerMask:
+    serializedVersion: 2
+    m_Bits: 2048
   Lane: 0
   juking: 0
 --- !u!1 &509047133
@@ -1136,7 +1143,7 @@ GameObject:
   - 4: {fileID: 512884227}
   - 65: {fileID: 512884229}
   - 114: {fileID: 512884228}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BoundaryEast11
   m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
@@ -1287,6 +1294,10 @@ Prefab:
     - target: {fileID: 6500000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
       propertyPath: m_IsTrigger
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
@@ -1809,7 +1820,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
       propertyPath: m_Layer
-      value: 0
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
@@ -2750,6 +2761,10 @@ Prefab:
       propertyPath: m_LocalScale.z
       value: 36
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_Layer
+      value: 11
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
   m_RootGameObject: {fileID: 1577231964}
@@ -2944,7 +2959,7 @@ GameObject:
   - 4: {fileID: 1577231965}
   - 65: {fileID: 1577231967}
   - 114: {fileID: 1577231966}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BoundaryEast2
   m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
@@ -3098,7 +3113,7 @@ GameObject:
   - 4: {fileID: 1748535139}
   - 65: {fileID: 1748535138}
   - 114: {fileID: 1748535137}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BoundaryEast12
   m_TagString: RunnerBoundary
   m_Icon: {fileID: 0}
@@ -3438,6 +3453,10 @@ Prefab:
     - target: {fileID: 400000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
       propertyPath: m_LocalScale.z
       value: 37
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_Layer
+      value: 11
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
