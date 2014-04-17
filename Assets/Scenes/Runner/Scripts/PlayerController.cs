@@ -12,14 +12,19 @@ public class PlayerController : MonoBehaviour {
   public float LaneDist;
   public int SlideLength;
   public float JukeSpeed;
+  public LayerMask BoundaryLayerMask;
 
   public int Lane;
 
   private bool sliding;
+
+  // juke vars
   public bool juking;
   private int jukeDirection;
   private int queuedJuke;
   private Vector3 jukeToPos;
+
+
   private int standOnFrame;
   private Vector2 initialTouch;
   private bool dragging = false;
@@ -38,6 +43,7 @@ public class PlayerController : MonoBehaviour {
     dealWithKeyboardInput();
     applyConstantForce();
     checkStateChanges();
+    snapToGrid();
     // doMovement();
   }
 
@@ -56,33 +62,50 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void checkStateChanges() {
+    checkStandUp();
+    checkOnJuke();
+  }
+
+  private void checkStandUp() {
     if (sliding && standOnFrame <= Time.frameCount) {
       standUp();
     }
+  }
+
+  private void checkOnJuke() {
     if (juking) {
-      RaycastHit hitInfo;
-      if (rigidbody.SweepTest(transform.right * jukeDirection, out hitInfo, 0.2f)) {
-        juke(jukeDirection * -1, true);
-      }
-      float incr = (jukeDirection * JukeSpeed) * Time.deltaTime;
-      Vector3 nextPos = transform.position + (transform.right * incr);
-      bool passed = false;
-      if (System.Math.Abs(transform.right.x) >= 0.001f && ((jukeToPos.x - transform.position.x) * jukeDirection <= 0)) { passed = true; }
-      if (System.Math.Abs(transform.right.y) >= 0.001f && ((jukeToPos.y - transform.position.y) * jukeDirection <= 0)) { passed = true; }
-      if (System.Math.Abs(transform.right.z) >= 0.001f && ((jukeToPos.z - transform.position.z) * jukeDirection <= 0)) { passed = true; }
-      if ( passed ) {
+      RaycastHit info;
+      if (Physics.Raycast(transform.position + Vector3.up + (transform.right * jukeDirection * 0.1f), transform.right * jukeDirection, out info, 0.1f, BoundaryLayerMask)) {
+        Debug.Log("Hit: " + info.collider.gameObject.name);
         juking = false;
-        nextPos = transform.position;
-        Debug.Log("passed. transform.right: " + transform.right);
-        if (System.Math.Abs(transform.right.x) >= 0.001f) { nextPos.x = jukeToPos.x; }
-        if (System.Math.Abs(transform.right.y) >= 0.001f) { nextPos.y = jukeToPos.y; }
-        if (System.Math.Abs(transform.right.z) >= 0.001f) { nextPos.z = jukeToPos.z; }
-        if (queuedJuke != 0) {
-          juke(queuedJuke);
-        }
-        queuedJuke = 0;
+        juke(jukeDirection * -1, jukeToPos);
       }
-      transform.position = nextPos;
+
+      bool madeIt = (
+        ((transform.right.x >  0.5f) && ((transform.position.x - jukeToPos.x) * jukeDirection) > 0) ||
+        ((transform.right.x < -0.5f) && ((transform.position.x - jukeToPos.x) * jukeDirection) < 0) ||
+        ((transform.right.y >  0.5f) && ((transform.position.y - jukeToPos.y) * jukeDirection) > 0) ||
+        ((transform.right.y < -0.5f) && ((transform.position.y - jukeToPos.y) * jukeDirection) < 0) ||
+        ((transform.right.z >  0.5f) && ((transform.position.z - jukeToPos.z) * jukeDirection) > 0) ||
+        ((transform.right.z < -0.5f) && ((transform.position.z - jukeToPos.z) * jukeDirection) < 0)
+      );
+      if (madeIt) {
+        Debug.Log("No more juking because we've reached the target");
+        juking = false;
+        Vector3 vel = rigidbody.velocity;
+        Vector3 pos = transform.position;
+        if (System.Math.Abs(transform.right.x) > 0.5f) { vel.x = 0; pos.x = jukeToPos.x; }
+        if (System.Math.Abs(transform.right.y) > 0.5f) { vel.y = 0; pos.y = jukeToPos.y; }
+        if (System.Math.Abs(transform.right.z) > 0.5f) { vel.z = 0; pos.z = jukeToPos.z; }
+        rigidbody.velocity = vel;
+        transform.position = pos;
+      }
+    }
+  }
+
+  private void snapToGrid() {
+    if (!juking) {
+      // TODO: x to Math.Round
     }
   }
 
@@ -139,6 +162,7 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void jump() {
+    Debug.Log("velocity: " + rigidbody.velocity);
     if (grounded()) {
       Vector3 vel = rigidbody.velocity;
       vel.y = JumpForce;
@@ -147,20 +171,20 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
-    juke(direction, false);
+    juke(direction, transform.position);
   }
 
-  private void juke(int direction, bool force) {
-    if (!juking || force) {
-      Vector3 originalPos;
-      if (juking) { originalPos = jukeToPos; }
-      else { originalPos = transform.position; }
-      Vector3 newPos = originalPos + (transform.right * direction * LaneDist);
-      jukeToPos = newPos;
+  private void juke(int direction, Vector3 fromPos) {
+    if (!juking) {
       juking = true;
       jukeDirection = direction;
-    } else {
-      queuedJuke = direction;
+      jukeToPos = fromPos + transform.right * direction * LaneDist;
+      Vector3 vel = rigidbody.velocity;
+      if (System.Math.Abs(transform.right.x) > 0.5f) {vel.x = direction * JukeSpeed;}
+      if (System.Math.Abs(transform.right.y) > 0.5f) {vel.y = direction * JukeSpeed;}
+      if (System.Math.Abs(transform.right.z) > 0.5f) {vel.z = direction * JukeSpeed;}
+      Debug.Log("Setting velocity to: " + vel);
+      rigidbody.velocity = vel;
     }
   }
 

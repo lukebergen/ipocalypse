@@ -1008,11 +1008,11 @@ Rigidbody:
   serializedVersion: 2
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: .0500000007
+  m_AngularDrag: 0
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 114
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!95 &479987625
 Animator:
@@ -1036,7 +1036,7 @@ Transform:
   m_PrefabInternal: {fileID: 663832548}
   m_GameObject: {fileID: 479987623}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.26860261}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1610523120}
@@ -1283,6 +1283,10 @@ Prefab:
     - target: {fileID: 100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
       propertyPath: m_Name
       value: BoundaryWest
+      objectReference: {fileID: 0}
+    - target: {fileID: 6500000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d6ede3cde2061436cb5a81c2f2656596, type: 2}
@@ -1584,7 +1588,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b33bc2af83b5d4055941037237864809, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.26860261
       objectReference: {fileID: 0}
     - target: {fileID: 400022, guid: b33bc2af83b5d4055941037237864809, type: 3}
       propertyPath: m_LocalRotation.x
