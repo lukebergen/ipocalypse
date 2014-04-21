@@ -52,7 +52,8 @@ public class PlayerController : MonoBehaviour {
 
   private void postMovementCleanup() {
     if (controller.isGrounded) {
-      velocity.y = 0.0f;
+      Vector3 allButUp = (transform.up - Vector3.one) * -1;
+      velocity = Vector3.Scale(velocity, allButUp);
     }
   }
 
