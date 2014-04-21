@@ -4,109 +4,81 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
   public enum Direction {Up, Down, Left, Right};
-  public enum State {Running, Juking, Jumping, Rolling, Stumbling};
 
-  public float RunSpeed;
-  public float JumpForce;
+  public float runSpeed;
+  public float jumpForce;
+  public Vector3 gravity;
+
   public float DragThreshold;
-  public float LaneDist;
-  public int SlideLength;
-  public float JukeSpeed;
-  public LayerMask BoundaryLayerMask;
 
-  public int Lane;
+  public Vector3 nextMovement;
 
-  private bool sliding;
-
-  // juke vars
-  public bool juking;
-  private int jukeDirection;
-  private int queuedJuke;
-  private Vector3 jukeToPos;
-
-
-  private int standOnFrame;
-  private Vector2 initialTouch;
-  private bool dragging = false;
-  private bool dragComplete = false;
+  private CharacterController controller;
+  private bool dragging;
+  private bool dragComplete;
+  private Vector3 initialTouch;
+  private Vector3 velocity;
 
   void Start() {
-    Lane = 0;
-    sliding = false;
-    queuedJuke = 0;
-    // rigidbody.AddForce(new Vector3(0, 0, RunSpeed));
+    controller = GetComponent<CharacterController>();
+    dragging = false;
+    dragComplete = false;
+    initialTouch = Vector3.zero;
+    velocity = Vector3.zero;
   }
 
-  // Update is called once per frame
-  void Update () {
-    // dealWithTouchInput();
+  void Update() {
+    Debug.Log("grounded: " + controller.isGrounded);
+    // dealWithTouchInput()
     dealWithKeyboardInput();
-    applyConstantForce();
-    checkStateChanges();
-    snapToGrid();
-    // doMovement();
+    applyPhysics();
+    doMovement();
+    postMovementCleanup();
   }
 
-  private void applyConstantForce() {
-    Vector3 vel = rigidbody.velocity;
-    if (System.Math.Abs(transform.forward.x) >= 0.001f) {
-      vel.x = RunSpeed;
-    }
-    if (System.Math.Abs(transform.forward.y) >= 0.001f) {
-      vel.y = RunSpeed;
-    }
-    if (System.Math.Abs(transform.forward.z) >= 0.001f) {
-      vel.z = RunSpeed;
-    }
-    rigidbody.velocity = vel;
+  private void applyPhysics() {
+    // gravity
+    velocity += gravity * Time.deltaTime;
+
+    // constant movement
+    Vector3 allButForward = ((transform.forward - Vector3.one) * -1);
+    velocity = Vector3.Scale(velocity, allButForward);
+    velocity += transform.forward * runSpeed;
   }
 
-  private void checkStateChanges() {
-    checkStandUp();
-    checkOnJuke();
+  private void doMovement() {
+    controller.Move(velocity);
   }
 
-  private void checkStandUp() {
-    if (sliding && standOnFrame <= Time.frameCount) {
-      standUp();
+  private void postMovementCleanup() {
+    if (controller.isGrounded) {
+      velocity.y = 0.0f;
     }
   }
 
-  private void checkOnJuke() {
-    if (juking) {
-      RaycastHit info;
-      if (Physics.Raycast(transform.position + Vector3.up + (transform.right * jukeDirection * 0.1f), transform.right * jukeDirection, out info, 0.1f, BoundaryLayerMask)) {
-        Debug.Log("Hit: " + info.collider.gameObject.name);
-        juking = false;
-        juke(jukeDirection * -1, jukeToPos);
-      }
-
-      bool madeIt = (
-        ((transform.right.x >  0.5f) && ((transform.position.x - jukeToPos.x) * jukeDirection) > 0) ||
-        ((transform.right.x < -0.5f) && ((transform.position.x - jukeToPos.x) * jukeDirection) < 0) ||
-        ((transform.right.y >  0.5f) && ((transform.position.y - jukeToPos.y) * jukeDirection) > 0) ||
-        ((transform.right.y < -0.5f) && ((transform.position.y - jukeToPos.y) * jukeDirection) < 0) ||
-        ((transform.right.z >  0.5f) && ((transform.position.z - jukeToPos.z) * jukeDirection) > 0) ||
-        ((transform.right.z < -0.5f) && ((transform.position.z - jukeToPos.z) * jukeDirection) < 0)
-      );
-      if (madeIt) {
-        Debug.Log("No more juking because we've reached the target");
-        juking = false;
-        Vector3 vel = rigidbody.velocity;
-        Vector3 pos = transform.position;
-        if (System.Math.Abs(transform.right.x) > 0.5f) { vel.x = 0; pos.x = jukeToPos.x; }
-        if (System.Math.Abs(transform.right.y) > 0.5f) { vel.y = 0; pos.y = jukeToPos.y; }
-        if (System.Math.Abs(transform.right.z) > 0.5f) { vel.z = 0; pos.z = jukeToPos.z; }
-        rigidbody.velocity = vel;
-        transform.position = pos;
-      }
+ private void jump() {
+    if (controller.isGrounded) {
+      velocity += transform.up * jumpForce;
     }
   }
 
-  private void snapToGrid() {
-    if (!juking) {
-      // TODO: x to Math.Round
-    }
+  private void juke(int direction) {
+    Debug.Log("Juking");
+  }
+
+  private void slide() {
+    Debug.Log("Sliding");
+  }
+
+  private Direction dragDirection(Vector3 initial, Vector3 terminal) {
+    Vector3 vect = terminal - initial; 
+    if (System.Math.Abs(vect.x) > System.Math.Abs(vect.y)) { 
+      if (vect.x > 0) { return Direction.Right; } 
+      else { return Direction.Left; } 
+    } else { 
+      if (vect.y > 0) { return Direction.Up; } 
+      else { return Direction.Down; } 
+    } 
   }
 
   private void dealWithKeyboardInput() {
@@ -158,64 +130,6 @@ public class PlayerController : MonoBehaviour {
       if (touch.phase == TouchPhase.Ended) {
         dragging = false;
       }
-    }
-  }
-
-  private void jump() {
-    Debug.Log("velocity: " + rigidbody.velocity);
-    if (grounded()) {
-      Vector3 vel = rigidbody.velocity;
-      vel.y = JumpForce;
-      rigidbody.velocity = vel;
-    }
-  }
-
-  private void juke(int direction) {
-    juke(direction, transform.position);
-  }
-
-  private void juke(int direction, Vector3 fromPos) {
-    if (!juking) {
-      juking = true;
-      jukeDirection = direction;
-      jukeToPos = fromPos + transform.right * direction * LaneDist;
-      Vector3 vel = rigidbody.velocity;
-      if (System.Math.Abs(transform.right.x) > 0.5f) {vel.x = direction * JukeSpeed;}
-      if (System.Math.Abs(transform.right.y) > 0.5f) {vel.y = direction * JukeSpeed;}
-      if (System.Math.Abs(transform.right.z) > 0.5f) {vel.z = direction * JukeSpeed;}
-      Debug.Log("Setting velocity to: " + vel);
-      rigidbody.velocity = vel;
-    }
-  }
-
-  private void slide() {
-    sliding = true;
-    Vector3 newPos = new Vector3(transform.position.x, transform.position.y + 0.2f, transform.position.z);
-    rigidbody.MovePosition(newPos);
-    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(-90, 0, 0)));
-
-    standOnFrame = Time.frameCount + SlideLength;
-  }
-
-  private void standUp() {
-    sliding = false;
-    rigidbody.MoveRotation(Quaternion.Euler(new Vector3(0, 0, 0)));
-  }
-
-  private bool grounded() {
-    Vector3 origin = transform.position;
-    origin.y += 0.1f;
-    return (Physics.Raycast(origin, Vector3.down, 0.2f));
-  }
-
-  private Direction dragDirection(Vector3 initial, Vector3 terminal) {
-    Vector3 vect = terminal - initial;
-    if (System.Math.Abs(vect.x) > System.Math.Abs(vect.y)) {
-      if (vect.x > 0) { return Direction.Right; }
-      else { return Direction.Left; }
-    } else {
-      if (vect.y > 0) { return Direction.Up; }
-      else { return Direction.Down; }
     }
   }
 }

@@ -25,13 +25,13 @@ public class DirectionChange : MonoBehaviour {
 
   private void resetPlayerState(GameObject player) {
     // TODO: possibly unset juking, jukeDirection, stumbling, etc...?
-    player.GetComponent<PlayerController>().juking = false;
-    RigidbodyConstraints constraints = RigidbodyConstraints.FreezeRotation;
-    Vector3 right = player.transform.right;
-    if (System.Math.Abs(right.x) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionX; }
-    if (System.Math.Abs(right.y) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionY; }
-    if (System.Math.Abs(right.z) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionZ; }
-    Rigidbody rb = player.GetComponent<Rigidbody>();
-    rb.constraints = constraints;
+    // player.GetComponent<PlayerController>().juking = false;
+    // RigidbodyConstraints constraints = RigidbodyConstraints.FreezeRotation;
+    // Vector3 right = player.transform.right;
+    // if (System.Math.Abs(right.x) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionX; }
+    // if (System.Math.Abs(right.y) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionY; }
+    // if (System.Math.Abs(right.z) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionZ; }
+    // Rigidbody rb = player.GetComponent<Rigidbody>();
+    // rb.constraints = constraints;
   }
 }
