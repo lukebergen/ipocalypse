@@ -25,7 +25,8 @@ public class DirectionChange : MonoBehaviour {
 
   private void resetPlayerState(GameObject player) {
     // TODO: possibly unset juking, jukeDirection, stumbling, etc...?
-    // player.GetComponent<PlayerController>().juking = false;
+    PlayerController pc = player.GetComponent<PlayerController>();
+    pc.ResetJuking();
     // RigidbodyConstraints constraints = RigidbodyConstraints.FreezeRotation;
     // Vector3 right = player.transform.right;
     // if (System.Math.Abs(right.x) >= 0.0001f) { constraints = constraints | RigidbodyConstraints.FreezePositionX; }

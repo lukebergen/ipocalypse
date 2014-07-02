@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 
   public float runSpeed;
   public float jumpForce;
+  public float laneWidth;
   public Vector3 gravity;
 
   public float DragThreshold;
@@ -28,7 +29,6 @@ public class PlayerController : MonoBehaviour {
   }
 
   void Update() {
-    Debug.Log("grounded: " + controller.isGrounded);
     // dealWithTouchInput()
     dealWithKeyboardInput();
     applyPhysics();
@@ -44,6 +44,11 @@ public class PlayerController : MonoBehaviour {
     Vector3 allButForward = ((transform.forward - Vector3.one) * -1);
     velocity = Vector3.Scale(velocity, allButForward);
     velocity += transform.forward * runSpeed;
+    Debug.Log("velocity/transform.right: " + velocity + " / " + transform.right);
+  }
+
+  public void ResetJuking() {
+    velocity = Vector3.Scale(velocity, transform.up);
   }
 
   private void doMovement() {
@@ -64,7 +69,8 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
-    Debug.Log("Juking");
+    Vector3 jukeToPos = transform.right * direction * laneWidth;
+    controller.Move(jukeToPos);
   }
 
   private void slide() {
