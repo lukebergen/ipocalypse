@@ -1081,6 +1081,7 @@ MonoBehaviour:
   runSpeed: .100000001
   jumpForce: .300000012
   laneWidth: 2
+  jukeSpeed: .200000003
   gravity: {x: 0, y: -.850000024, z: 0}
   DragThreshold: .5
   nextMovement: {x: 0, y: 0, z: 0}

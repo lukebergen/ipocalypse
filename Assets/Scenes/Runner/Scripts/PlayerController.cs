@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
   public float runSpeed;
   public float jumpForce;
   public float laneWidth;
+  public float jukeSpeed;
   public Vector3 gravity;
 
   public float DragThreshold;
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour {
   private bool dragComplete;
   private Vector3 initialTouch;
   private Vector3 velocity;
+  private Vector3 jukeToPos;
 
   void Start() {
     controller = GetComponent<CharacterController>();
@@ -44,10 +46,21 @@ public class PlayerController : MonoBehaviour {
     Vector3 allButForward = ((transform.forward - Vector3.one) * -1);
     velocity = Vector3.Scale(velocity, allButForward);
     velocity += transform.forward * runSpeed;
-    Debug.Log("velocity/transform.right: " + velocity + " / " + transform.right);
+
+    // juke movement
+    if (jukeToPos != Vector3.zero) {
+      if (crossedJukePos()) {
+        transform.position = Vector3.Scale(transform.position, (transform.right * -1) + Vector3.one ) + Vector3.Scale(transform.position, transform.right);
+        ResetJuking();
+        jukeToPos = Vector3.zero;
+      } else if (jukeCollision()) {
+        // TODO: change jukeToPos and velocity to have us move back to the origin of the juke
+      }
+    }
   }
 
   public void ResetJuking() {
+    // Left/Right velocity needs to be stopped. Constant forward velocity takes care of forward. Only thing we need to worry about is gravity.
     velocity = Vector3.Scale(velocity, transform.up);
   }
 
@@ -62,6 +75,19 @@ public class PlayerController : MonoBehaviour {
     }
   }
 
+  private bool crossedJukePos() {
+    Vector3 before = Vector3.Scale((transform.position - jukeToPos), transform.right);
+    Vector3 after = Vector3.Scale(((transform.position + velocity) - jukeToPos), transform.right);
+    // if the rightness before and after is on opposite sides of 0, that means that next move takes us over the line
+    bool result = (before.x + before.y + before.z) * (after.x + after.y + after.z) <= 0;
+    return result;
+  }
+
+  private bool jukeCollision() {
+    // TODO: return true if the next position would cause a juke left/right collision
+    return false;
+  }
+
  private void jump() {
     if (controller.isGrounded) {
       velocity += transform.up * jumpForce;
@@ -69,8 +95,9 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void juke(int direction) {
-    Vector3 jukeToPos = transform.right * direction * laneWidth;
-    controller.Move(jukeToPos);
+    jukeToPos = transform.position + transform.right * direction * laneWidth;
+    velocity += transform.right * direction * jukeSpeed;
+    // controller.Move(jukeToPos);
   }
 
   private void slide() {
