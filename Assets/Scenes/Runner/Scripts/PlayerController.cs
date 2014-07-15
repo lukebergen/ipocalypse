@@ -13,25 +13,26 @@ public class PlayerController : MonoBehaviour {
 
   public float DragThreshold;
 
-  public Vector3 nextMovement;
-
-  private CharacterController controller;
   private bool dragging;
   private bool dragComplete;
   private Vector3 initialTouch;
-  private Vector3 velocity;
+  public Vector3 velocity;
+  public float distToGround;
   private Vector3 jukeToPos;
 
   void Start() {
-    controller = GetComponent<CharacterController>();
     dragging = false;
     dragComplete = false;
     initialTouch = Vector3.zero;
     velocity = Vector3.zero;
+    distToGround = collider.bounds.extents.y;
+  }
+
+  void xUpdate() {
+    // dealWithTouchInput()
   }
 
   void Update() {
-    // dealWithTouchInput()
     dealWithKeyboardInput();
     applyPhysics();
     doMovement();
@@ -40,10 +41,14 @@ public class PlayerController : MonoBehaviour {
 
   private void applyPhysics() {
     // gravity
-    velocity += gravity * Time.deltaTime;
+    if (isGrounded()) {
+      velocity = Vector3.Scale(velocity, (Vector3.up * -1 + Vector3.one));
+    } else {
+      velocity += gravity * Time.deltaTime;
+    }
 
     // constant movement
-    Vector3 allButForward = ((transform.forward - Vector3.one) * -1);
+    Vector3 allButForward = (transform.forward * -1 + Vector3.one);
     velocity = Vector3.Scale(velocity, allButForward);
     velocity += transform.forward * runSpeed;
 
@@ -65,11 +70,16 @@ public class PlayerController : MonoBehaviour {
   }
 
   private void doMovement() {
-    controller.Move(velocity);
+    transform.Translate(velocity, Space.World);
+  }
+
+  public bool isGrounded() {
+    // Character is grounded if there's something below us and our y velocity doesn't have us moving upwards (like at the start of a jump)
+    return Physics.Raycast(transform.position + velocity + (transform.up * 0.1f), -Vector3.up, distToGround + 0.1f) && velocity.y <= 0.0f;
   }
 
   private void postMovementCleanup() {
-    if (controller.isGrounded) {
+    if (isGrounded()) {
       Vector3 allButUp = (transform.up - Vector3.one) * -1;
       velocity = Vector3.Scale(velocity, allButUp);
     }
@@ -88,8 +98,8 @@ public class PlayerController : MonoBehaviour {
     return false;
   }
 
- private void jump() {
-    if (controller.isGrounded) {
+  private void jump() {
+    if (isGrounded()) {
       velocity += transform.up * jumpForce;
     }
   }
@@ -97,7 +107,6 @@ public class PlayerController : MonoBehaviour {
   private void juke(int direction) {
     jukeToPos = transform.position + transform.right * direction * laneWidth;
     velocity += transform.right * direction * jukeSpeed;
-    // controller.Move(jukeToPos);
   }
 
   private void slide() {
